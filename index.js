@@ -63,7 +63,7 @@ async function run() {
             res.send(getpayment)
         });
 
-        // post team members
+        // post team memberss
         app.post('/getpayment', async (req, res) => {
             const getpayment = req.body;
             const result = await getpaymentCollection.insertOne(getpayment);
