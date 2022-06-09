@@ -55,21 +55,72 @@ async function run() {
         const serviceCollection = database.collection('service');
         const subscribersCollection = database.collection('subscribers');
         const getpaymentCollection = database.collection('getpayment');
+        const withdrawCollection = database.collection('withdraw');
 
-        //get team members
+        //get withdraw
+        app.get('/withdraw', async (req, res) => {
+            const cursor = withdrawCollection.find({});
+            const withdraw = await cursor.toArray()
+            res.send(withdraw)
+        });
+
+        // post withdraw
+        app.post('/withdraw', async (req, res) => {
+            const withdraw = req.body;
+            const result = await withdrawCollection.insertOne(withdraw);
+            res.json(result);
+        })
+        // get withdraw
+
+        app.get('/withdraw/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectID(id) };
+            const withdraw = await withdrawCollection.findOne(query);
+            res.json(withdraw);
+        })
+
+        // delete withdraw
+        app.delete('/withdraw/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectID(id) };
+            const withdraw = await withdrawCollection.deleteOne(query);
+            res.json(withdraw);
+        })
+
+        app.put('/withdraw/:id', verifyToken, async (req, res) => {
+            const id = req.params.id;
+            const orders = req.body;
+            const filter = { _id: ObjectID(id) };
+            const options = { upsert: true };
+            const updateDoc = { $set: orders };
+            const result = await withdrawCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+        });
+
+
+
+
+
+
+
+
+
+
+
+        //get getpayment
         app.get('/getpayment', async (req, res) => {
             const cursor = getpaymentCollection.find({});
             const getpayment = await cursor.toArray()
             res.send(getpayment)
         });
 
-        // post team memberssssss
+        // post getpayment
         app.post('/getpayment', async (req, res) => {
             const getpayment = req.body;
             const result = await getpaymentCollection.insertOne(getpayment);
             res.json(result);
         })
-        // get single teammembers
+        // get getpayment
 
         app.get('/getpayment/:id', async (req, res) => {
             const id = req.params.id;
@@ -78,7 +129,7 @@ async function run() {
             res.json(getpayment);
         })
 
-        // delete single teammembers
+        // delete getpayment
         app.delete('/getpayment/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectID(id) };
